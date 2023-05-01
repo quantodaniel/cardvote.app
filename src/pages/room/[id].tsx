@@ -9,6 +9,8 @@ import {
 } from "react";
 import { Socket, io } from "socket.io-client";
 
+const OPTIONS = ["S", "M", "L", "XL", "XXL", "?"];
+
 type SocketClient = Socket<ClientEvents, ServerEvents> | null;
 
 type CardProps = {
@@ -20,13 +22,16 @@ const Card = (props: CardProps) => {
   const { reveal, vote } = props;
 
   let className = "bg-slate-200 border border-slate-300 shadow-inner";
-  if (vote) className = "bg-green-200 border border-green-400 shadow";
+  if (vote) className = "bg-blue-200 border border-blue-400 shadow";
 
   return (
     <div
-      className={`transition-all w-20 h-28 rounded p-2 flex items-center justify-center ${className}`}
+      className={`transition-all w-20 h-28 px-2 py-1 rounded flex flex-col justify-between ${className}`}
     >
-      <span className="text-2xl font-bold">{reveal ? vote : "?"}</span>
+      <span className="text-xl font-bold text-start">
+        {reveal ? vote : "?"}
+      </span>
+      <span className="text-xl font-bold text-end">{reveal ? vote : "?"}</span>
     </div>
   );
 };
@@ -90,52 +95,60 @@ export default function Home() {
   if (!data) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col gap-20 py-20">
-      <h1 className="text-xl font-bold text-center">Room: {roomId}</h1>
+    <div className="flex flex-col py-10">
+      <div className="mx-auto flex flex-col gap-20">
+        <h1 className="text-xl font-bold text-center">Room: {roomId}</h1>
 
-      <div className="mx-auto">
-        <Votes {...data} />
+        <div>
+          <Votes {...data} />
+        </div>
+
+        <div className="flex gap-2 justify-center">
+          <button
+            type="button"
+            onClick={() => handleReset()}
+            className="bg-blue-400 py-2 px-4 hover:bg-blue-500 transition-all text-white rounded"
+          >
+            RESET
+          </button>
+          <button
+            type="button"
+            onClick={() => handleReveal()}
+            className="bg-blue-700 py-2 px-4 hover:bg-blue-500 transition-all text-white rounded"
+          >
+            REVEAL CARDS
+          </button>
+        </div>
       </div>
 
-      <div className="mx-auto">
-        <button
-          type="button"
-          onClick={() => handleReset()}
-          className="py-2 px-4 bg-slate-300"
-        >
-          RESET
-        </button>
-        <button
-          type="button"
-          onClick={() => handleReveal()}
-          className="py-2 px-4 bg-slate-300"
-        >
-          REVEAL CARDS
-        </button>
-      </div>
+      <div
+        className="fixed flex w-screen h-32"
+        style={{
+          bottom: 0,
+          left: "calc(50% - 40px)",
+        }}
+      >
+        {OPTIONS.map((option, ix) => {
+          const distanceFromCenter = ix + 0.5 - OPTIONS.length / 2;
+          const cardAngle = distanceFromCenter * 2;
+          const cardDistance = distanceFromCenter * 70;
 
-      <div className="mx-auto">
-        <button
-          type="button"
-          onClick={() => handleVote("A")}
-          className="py-2 px-4 bg-slate-300"
-        >
-          A
-        </button>
-        <button
-          type="button"
-          onClick={() => handleVote("B")}
-          className="py-2 px-4 bg-slate-300"
-        >
-          B
-        </button>
-        <button
-          type="button"
-          onClick={() => handleVote("C")}
-          className="py-2 px-4 bg-slate-300"
-        >
-          C
-        </button>
+          return (
+            <button
+              type="button"
+              key={`btn_option_${ix}`}
+              onClick={() => handleVote(option)}
+              style={{
+                position: "absolute",
+                transform: `rotate(${cardAngle}deg) translateX(${cardDistance}%) `,
+              }}
+            >
+              <div className="hover:-translate-y-3 transition-all">
+                <Card reveal vote={option} />
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
