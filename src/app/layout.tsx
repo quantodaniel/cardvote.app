@@ -1,4 +1,6 @@
+import "@/styles/globals.css";
 import Providers from "@/components/Providers";
+import { Navbar } from "@/components/organisms/Navbar";
 
 export const metadata = {
   title: "Next.js",
@@ -11,10 +13,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <Providers>
-        <body>{children}</body>
-      </Providers>
+    <html lang="en" className="bg-base-100">
+      <body className="container max-w-screen-lg mx-auto px-4">
+        <Providers>
+          <Navbar />
+          <main>{children}</main>
+        </Providers>
+      </body>
     </html>
   );
 }
