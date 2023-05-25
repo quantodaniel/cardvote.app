@@ -23,6 +23,6 @@ export const useAuth = () => {
 
     if (!auth.currentUser) signInAnonymously(auth);
   }, []);
-  console.log(user?.uid);
+
   return { currentUser: user };
 };
