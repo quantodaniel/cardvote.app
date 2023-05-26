@@ -1,6 +1,6 @@
 "use client";
 
-import "@/config/db";
+import "@/config/firebase";
 
 import {
   User,
@@ -19,16 +19,19 @@ const updateUserAvatar = async () => {
   const currentAvatar = localStorage.getItem("avatar");
   if (currentAvatar) return;
 
-  const randomUserResponse = await fetch("/api/avatar");
-  const randomUser = await randomUserResponse.json();
-  if (!randomUser.photoURL) return;
+  const randomPicture = fetch("/api/user/avatar");
+  const randomDisplayName = fetch("/api/user/name");
 
-  localStorage.setItem("avatar", randomUser.photoURL);
+  const [pictureResponse, displayNameResponse] = await Promise.all([
+    randomPicture,
+    randomDisplayName,
+  ]);
 
-  updateProfile(auth.currentUser, {
-    photoURL: randomUser.photoURL,
-    displayName: randomUser.displayName,
-  });
+  const { photoURL } = await pictureResponse.json();
+  const { displayName } = await displayNameResponse.json();
+
+  localStorage.setItem("avatar", photoURL);
+  updateProfile(auth.currentUser, { photoURL, displayName });
 };
 
 export const useAuth = () => {
@@ -43,8 +46,8 @@ export const useAuth = () => {
         setUser(currentUser);
 
         if (!userUpdated.current) {
-          updateUserAvatar();
           userUpdated.current = true;
+          updateUserAvatar();
         }
       }
     });

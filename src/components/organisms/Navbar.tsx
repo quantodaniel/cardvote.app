@@ -25,8 +25,8 @@ export const Navbar = () => {
         <h2 className="text-xl">Planning to the Next Level!</h2>
       </div>
 
-      <div className="flex flex-1 justify-end items-center">
-        {currentUser?.displayName}
+      <div className="flex flex-1 justify-end items-center gap-2">
+        <div>{currentUser?.displayName}</div>
         <div className="avatar online">
           <Image
             src={currentAvatar}
