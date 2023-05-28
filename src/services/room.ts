@@ -18,8 +18,9 @@ export const serviceRoom = {
     if (!currentUser) return;
 
     set(ref(db, `rooms/${roomId}/online/${currentUser.uid}`), {
-      name: currentUser.displayName,
-      avatar: currentUser.photoURL,
+      uid: currentUser.uid,
+      displayName: currentUser.displayName,
+      photoURL: currentUser.photoURL,
     });
   },
 
@@ -37,13 +38,20 @@ export const serviceRoom = {
 
     set(ref(db, `rooms/${roomId}/votes/${currentUser.uid}`), {
       vote,
-      name: currentUser.displayName,
-      avatar: currentUser.photoURL,
+      uid: currentUser.uid,
+      displayName: currentUser.displayName,
+      photoURL: currentUser.photoURL,
+      createdAt: Date.now(),
     });
+  },
+
+  reveal: (roomId: string) => {
+    set(ref(db, `rooms/${roomId}/reveal`), true);
   },
 
   clearVotes: (roomId: string) => {
     set(ref(db, `rooms/${roomId}/votes`), null);
+    set(ref(db, `rooms/${roomId}/reveal`), false);
   },
 
   subscribe: (roomId: string, callback: (data: Room) => void) => {

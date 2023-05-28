@@ -1,13 +1,17 @@
 "use client";
 
 import "@/config/firebase";
-import { Room } from "@/interface/room";
 
 import { serviceRoom } from "@/services/room";
-import { useCallback, useState } from "react";
+import { useRoomStore } from "@/store/room";
+import { useParams } from "next/navigation";
+import { useCallback } from "react";
 
-export const useRoom = (currentRoomId: string) => {
-  const [roomData, setRoomData] = useState<Room | null>(null);
+export const useRoom = () => {
+  const params = useParams();
+  const currentRoomId = params.roomId;
+
+  const setRoomData = useRoomStore((state) => state.setRoomData);
 
   const subscribe = useCallback(() => {
     serviceRoom.join(currentRoomId);
@@ -17,7 +21,7 @@ export const useRoom = (currentRoomId: string) => {
       serviceRoom.leave(currentRoomId);
       unsubscribe();
     };
-  }, [currentRoomId]);
+  }, [currentRoomId, setRoomData]);
 
   const join = useCallback(() => {
     const unsubscribe = subscribe();
@@ -36,9 +40,13 @@ export const useRoom = (currentRoomId: string) => {
     [currentRoomId]
   );
 
+  const reveal = useCallback(() => {
+    serviceRoom.reveal(currentRoomId);
+  }, [currentRoomId]);
+
   const clearVotes = useCallback(() => {
     serviceRoom.clearVotes(currentRoomId);
   }, [currentRoomId]);
 
-  return { join, vote, clearVotes, roomData };
+  return { join, vote, reveal, clearVotes };
 };

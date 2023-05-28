@@ -1,15 +1,17 @@
 export type User = {
-  avatar: string;
-  name: string;
+  uid: string;
+  photoURL: string;
+  displayName: string;
 };
 
 export type Vote = User & {
   vote: string;
+  createdAt: number;
 };
 
 export type Room = {
-  val(): any;
   id: string;
+  reveal: boolean;
   online: Record<string, User>;
   votes: Record<string, Vote>;
 };
