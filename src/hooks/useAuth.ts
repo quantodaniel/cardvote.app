@@ -1,6 +1,7 @@
 "use client";
 
 import "@/config/firebase";
+import userStore from "@/store/user";
 
 import {
   User,
@@ -10,40 +11,55 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+
+const updateUserName = async (currentUser: User) => {
+  const userData = userStore.getState();
+  if (userData.displayName) return;
+
+  if (currentUser.displayName) {
+    userData.setDisplayName(currentUser.displayName);
+    return;
+  }
+
+  const randomDisplayName = await fetch("/api/user/name");
+  const { displayName } = await randomDisplayName.json();
+
+  userData.setDisplayName(displayName);
+  updateProfile(currentUser, { displayName });
+};
 
 const updateUserAvatar = async (currentUser: User) => {
-  const currentAvatar = localStorage.getItem("avatar");
-  console.log("currentAvatar", currentAvatar);
-  if (currentAvatar) return currentUser;
+  const userData = userStore.getState();
+  if (userData.photoURL) return;
 
-  const randomPicture = fetch("/api/user/avatar");
-  const randomDisplayName = fetch("/api/user/name");
+  if (currentUser.photoURL) {
+    userData.setPhotoURL(currentUser.photoURL);
+    return;
+  }
 
-  const [pictureResponse, displayNameResponse] = await Promise.all([
-    randomPicture,
-    randomDisplayName,
-  ]);
+  const randomPicture = await fetch("/api/user/avatar");
+  const { photoURL } = await randomPicture.json();
 
-  const { photoURL } = await pictureResponse.json();
-  const { displayName } = await displayNameResponse.json();
-
-  localStorage.setItem("avatar", photoURL);
-  updateProfile(currentUser, { photoURL, displayName });
+  userData.setPhotoURL(photoURL);
+  updateProfile(currentUser, { photoURL });
 };
 
 export const useAuth = () => {
-  const isMounted = useRef(false);
-
   useEffect(() => {
-    if (isMounted.current) return;
-    isMounted.current = true;
-
     const auth = getAuth();
-    onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) updateUserAvatar(currentUser);
+
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        updateUserName(currentUser);
+        updateUserAvatar(currentUser);
+      }
     });
 
     if (!auth.currentUser) signInAnonymously(auth);
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 };

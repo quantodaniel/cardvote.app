@@ -1,11 +1,12 @@
 "use client";
 
+import useUserStore from "@/store/user";
 import Image from "next/image";
 import Link from "next/link";
 
 export const Navbar = () => {
-  const currentUser = {} as any;
-  const currentAvatar = currentUser?.photoURL || "/no-avatar.png";
+  const photoURL = useUserStore((state) => state.photoURL);
+  const displayName = useUserStore((state) => state.displayName);
 
   return (
     <nav className="my-8 flex gap-4">
@@ -25,14 +26,14 @@ export const Navbar = () => {
       </div>
 
       <div className="flex flex-1 justify-end items-center gap-2">
-        <div>{currentUser?.displayName}</div>
+        <div>{displayName}</div>
         <div className="avatar online">
           <Image
-            src={currentAvatar}
+            src={photoURL || "/no-avatar.png"}
             className="rounded-full shadow-lg"
             width={36}
             height={36}
-            alt="Logged User Avatar"
+            alt={displayName}
           />
         </div>
       </div>
