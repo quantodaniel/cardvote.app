@@ -5,7 +5,7 @@ export const OnlinePlayers = () => {
   const { onlineUsers } = useRoomData();
 
   return (
-    <>
+    <div>
       <h3 className="text-xl">Online players</h3>
       <div className="avatar-group -space-x-5">
         {onlineUsers.map((onlineUser) => (
@@ -15,6 +15,6 @@ export const OnlinePlayers = () => {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 };

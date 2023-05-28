@@ -16,12 +16,12 @@ export default function RootLayout(props: Props) {
   const { children } = props;
 
   return (
-    <html lang="en" className="bg-base-100">
-      <body className="container max-w-screen-lg mx-auto px-4">
+    <html lang="en" className="bg-base-100 min-h-screen">
+      <body className="container max-w-screen-lg mx-auto min-h-screen flex flex-col p-4 gap-4">
         <Providers>
           <Loader>
             <Navbar />
-            <main>{children}</main>
+            <main className="flex flex-col flex-1 gap-4">{children}</main>
           </Loader>
         </Providers>
       </body>

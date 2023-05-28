@@ -32,7 +32,7 @@ export const serviceRoom = {
     set(ref(db, `rooms/${roomId}/votes/${currentUser.uid}`), null);
   },
 
-  vote: (roomId: string, vote: string) => {
+  vote: (roomId: string, vote: number) => {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
 

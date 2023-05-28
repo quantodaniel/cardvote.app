@@ -5,7 +5,7 @@ export const Estimations = () => {
   const { estimations } = useRoomData();
 
   return (
-    <div className="mb-4">
+    <div>
       <h3 className="text-xl">Estimations</h3>
       <div className="grid grid-cols-4 gap-4">
         {estimations.map((userEstimation) => (

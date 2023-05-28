@@ -5,7 +5,7 @@ export type User = {
 };
 
 export type Vote = User & {
-  vote: string;
+  vote: number | string;
   createdAt: number;
 };
 

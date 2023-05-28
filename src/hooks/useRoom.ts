@@ -34,7 +34,7 @@ export const useRoom = () => {
   }, [subscribe]);
 
   const vote = useCallback(
-    (vote: string) => {
+    (vote: number) => {
       serviceRoom.vote(currentRoomId, vote);
     },
     [currentRoomId]

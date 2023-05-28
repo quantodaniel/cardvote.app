@@ -9,7 +9,7 @@ export const Navbar = () => {
   const displayName = useUserStore((state) => state.displayName);
 
   return (
-    <nav className="my-8 flex gap-4">
+    <nav className="flex gap-4">
       <Link href="/" className="btn btn-ghost h-auto hover:bg-transparent p-0">
         <Image
           src="/dall-e-poker.png"

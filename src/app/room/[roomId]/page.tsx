@@ -1,6 +1,6 @@
 "use client";
 
-import { Cards } from "@/components/molecules/Cards";
+import { DeckOfCards } from "@/components/molecules/DeckOfCards";
 import { Estimations } from "@/components/molecules/Estimations";
 import { OnlinePlayers } from "@/components/molecules/OnlinePlayers";
 import { useRoom } from "@/hooks/useRoom";
@@ -20,8 +20,10 @@ const Page = () => {
   return (
     <>
       <OnlinePlayers />
-      <Estimations />
-      <Cards />
+      <div className="flex-1">
+        <Estimations />
+      </div>
+      <DeckOfCards />
     </>
   );
 };
