@@ -1,11 +1,10 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
 import Image from "next/image";
 import Link from "next/link";
 
 export const Navbar = () => {
-  const { currentUser } = useAuth();
+  const currentUser = {} as any;
   const currentAvatar = currentUser?.photoURL || "/no-avatar.png";
 
   return (

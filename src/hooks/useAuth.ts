@@ -10,14 +10,12 @@ import {
   updateProfile,
 } from "firebase/auth";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-const updateUserAvatar = async () => {
-  const auth = getAuth();
-  if (!auth.currentUser) return;
-
+const updateUserAvatar = async (currentUser: User) => {
   const currentAvatar = localStorage.getItem("avatar");
-  if (currentAvatar) return;
+  console.log("currentAvatar", currentAvatar);
+  if (currentAvatar) return currentUser;
 
   const randomPicture = fetch("/api/user/avatar");
   const randomDisplayName = fetch("/api/user/name");
@@ -31,29 +29,21 @@ const updateUserAvatar = async () => {
   const { displayName } = await displayNameResponse.json();
 
   localStorage.setItem("avatar", photoURL);
-  updateProfile(auth.currentUser, { photoURL, displayName });
+  updateProfile(currentUser, { photoURL, displayName });
 };
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const userUpdated = useRef(false);
+  const isMounted = useRef(false);
 
   useEffect(() => {
+    if (isMounted.current) return;
+    isMounted.current = true;
+
     const auth = getAuth();
-
-    onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-
-        if (!userUpdated.current) {
-          userUpdated.current = true;
-          updateUserAvatar();
-        }
-      }
+    onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) updateUserAvatar(currentUser);
     });
 
     if (!auth.currentUser) signInAnonymously(auth);
   }, []);
-
-  return { currentUser: user };
 };

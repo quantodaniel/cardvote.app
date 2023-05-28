@@ -1,21 +1,44 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import "@/config/firebase";
+import { Room } from "@/interface/room";
 
-export const useRoom = () => {
-  const router = useRouter();
-  const params = useParams();
+import { serviceRoom } from "@/services/room";
+import { useCallback, useState } from "react";
 
-  const currentRoomId = params.roomId;
+export const useRoom = (currentRoomId: string) => {
+  const [roomData, setRoomData] = useState<Room | null>(null);
 
-  const createRoomId = () => {
-    return Math.random().toString(36).substring(7);
-  };
+  const subscribe = useCallback(() => {
+    serviceRoom.join(currentRoomId);
+    const unsubscribe = serviceRoom.subscribe(currentRoomId, setRoomData);
 
-  const createRoom = () => {
-    const roomId = createRoomId();
-    router.push(`/room/${roomId}`);
-  };
+    return () => {
+      serviceRoom.leave(currentRoomId);
+      unsubscribe();
+    };
+  }, [currentRoomId]);
 
-  return { currentRoomId, createRoomId, createRoom };
+  const join = useCallback(() => {
+    const unsubscribe = subscribe();
+    window.addEventListener("beforeunload", unsubscribe);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("beforeunload", unsubscribe);
+    };
+  }, [subscribe]);
+
+  const vote = useCallback(
+    (vote: string) => {
+      serviceRoom.vote(currentRoomId, vote);
+    },
+    [currentRoomId]
+  );
+
+  const clearVotes = useCallback(() => {
+    serviceRoom.clearVotes(currentRoomId);
+  }, [currentRoomId]);
+
+  return { join, vote, clearVotes, roomData };
 };

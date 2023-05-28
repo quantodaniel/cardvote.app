@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, get, ref, set } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_apiKey,
@@ -12,4 +13,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-export { onValue, ref, app, db };
+const getCurrentUser = () => {
+  const auth = getAuth();
+  return auth.currentUser;
+};
+
+export { set, onValue, ref, get, app, db, getCurrentUser };
