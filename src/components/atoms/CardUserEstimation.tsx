@@ -6,18 +6,23 @@ export const CardUserEstimation = (props: Vote) => {
   const { displayName, photoURL, vote, createdAt } = props;
 
   return (
-    <div className="chat chat-start">
-      <div className="chat-image avatar">
-        <div className="w-10 mask mask-squircle">
-          <Image src={photoURL} alt={displayName} width={160} height={160} />
+    <div className="card card-compact bg-base-100 shadow-lg card-side card-bordered">
+      <figure>
+        <Image
+          src={photoURL}
+          alt={displayName}
+          width={160}
+          height={160}
+          className="h-full w-40"
+        />
+      </figure>
+      <div className="card-body">
+        <div className="mx-auto">
+          <PokerCard cardSize={vote} />
         </div>
       </div>
-      <div className="chat-header">{displayName}</div>
-      <div className="chat-bubble">
-        <PokerCard cardSize={vote} />
-      </div>
-      <div className="chat-footer opacity-50">
-        at {new Date(createdAt).toLocaleTimeString()}
+      <div className="absolute bottom-2 left-2 badge badge-primary line-clamp-1">
+        {displayName}
       </div>
     </div>
   );

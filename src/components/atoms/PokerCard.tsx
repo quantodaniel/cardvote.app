@@ -15,11 +15,11 @@ export const PokerCard = (props: Props) => {
   }
 
   return (
-    <div className="flex flex-col bg-white rounded-lg w-20 h-28 justify-between px-2 py-1 border-4 border-cyan-300 text-cyan-600">
+    <div className="flex flex-col bg-base-200 rounded-lg w-20 h-28 justify-between px-2 py-1 border-4 border-accent text-accent">
       <div className="text-lg font-mono text-start">{top}</div>
       <Image
         src="/dall-e-poker.png"
-        className="rounded-full m-auto border-2 border-cyan-300"
+        className="rounded-full m-auto border-2 border-accent"
         width={32}
         height={32}
         alt="Planing Poker"
